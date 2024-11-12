@@ -14,6 +14,7 @@ declare function local:extract-congress-info($congress-info as document-node(), 
 
     return 
         <data>
+            if(($congress-info, $members-info)) then () else <error> documents not found</error>
             if (($invalid_arguments_number, $invalid_congress_number, $information_not_found) != 0) then
                 if ($invalid_arguments_number != 0) then <error>this script reads exactly one argument</error> else ()
                 else if ($invalid_congress_number != 0) then <error>congress number must be between 1 and 118</error> else ()
