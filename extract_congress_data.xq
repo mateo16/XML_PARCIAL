@@ -1,7 +1,5 @@
 declare variable $invalid_arguments_number as xs:integer external;
 declare variable $invalid_congress_number as xs:integer external;
-declare variable $information_not_found as xs:integer external;
-
 declare function local:extract-congress-info($congress-info as document-node(), $members-info as document-node()) as element(data) {
     let $name := $congress-info//name
     let $number := $name/@number
@@ -14,22 +12,20 @@ declare function local:extract-congress-info($congress-info as document-node(), 
 
     return 
         <data>
+           
             {
-                if(($congress-info, $members-info)) then () else <error> documents not found</error>
-            }
-            {
-            if ($invalid_arguments_number != 0 or $invalid_congress_number != 0 or $information_not_found != 0) then
-                (
+            if ($invalid_arguments_number != 0 or $invalid_congress_number != 0) then
+                (   
+                    if(($congress-info, $members-info)) then
+                    ()
+                    else <error> documents not found</error> ,
+
                     if ($invalid_arguments_number != 0) then 
                     <error>this script reads exactly one argument</error>
                     else (),
                 
                     if ($invalid_congress_number != 0) then 
                     <error>congress number must be between 1 and 118</error>
-                    else (),
-                
-                    if ($information_not_found != 0) then 
-                    <error>we couldn't retrieve the information</error>
                     else ()
                 )
 

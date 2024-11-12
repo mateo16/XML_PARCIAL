@@ -7,7 +7,6 @@ CONGRESS_PAGE_FILE=congress_page.html
 error=0
 invalid_arguments_number=0
 invalid_congress_number=0
-information_not_found=0
 
 # Fetch congress information and normalize the data
 curl -X GET "https://api.congress.gov/v3/congress/${CONGRESS_NUMBER}?format=xml&api_key=${CONGRESS_API}" -H "accept: application/xml" -o data/$CONGRESS_INFO_FILE
@@ -34,7 +33,7 @@ fi
 # If there are any errors, exit and log the result
 if [ $error -eq 1 ]
 then
-    java net.sf.saxon.Query "congress_number=$CONGRESS_NUMBER" "invalid_arguments_number=$invalid_arguments_number" "invalid_congress_number=$invalid_congress_number" "information_not_found=$information_not_found" ./extract_congress_data.xq -o:./data/$CONGRESS_DATA_FILE
+    java net.sf.saxon.Query "invalid_arguments_number=$invalid_arguments_number" "invalid_congress_number=$invalid_congress_number"  ./extract_congress_data.xq -o:./data/$CONGRESS_DATA_FILE
     echo Data generated at data/$CONGRESS_DATA_FILE
     java net.sf.saxon.Transform -s:data/$CONGRESS_DATA_FILE -xsl:transformations/add_validation_schema.xsl -o:data/$CONGRESS_DATA_FILE
     java net.sf.saxon.Transform -s:data/$CONGRESS_DATA_FILE -xsl:transformations/generate_html.xsl -o:data/$CONGRESS_PAGE_FILE
@@ -45,7 +44,7 @@ fi
 mkdir -p data
 
 # Create the XML output using XQuery
-java net.sf.saxon.Query "congress_number=$CONGRESS_NUMBER" "invalid_arguments_number=$invalid_arguments_number" "invalid_congress_number=$invalid_congress_number" "information_not_found=$information_not_found" ./extract_congress_data.xq -o:./data/$CONGRESS_DATA_FILE
+java net.sf.saxon.Query "invalid_arguments_number=$invalid_arguments_number" "invalid_congress_number=$invalid_congress_number" ./extract_congress_data.xq -o:./data/$CONGRESS_DATA_FILE
 
 # Apply XSLT transformations
 java net.sf.saxon.Transform -s:data/$CONGRESS_DATA_FILE -xsl:transformations/add_validation_schema.xsl -o:data/$CONGRESS_DATA_FILE
