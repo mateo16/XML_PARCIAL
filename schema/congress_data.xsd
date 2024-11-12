@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<xsd:element name="data">
+  <xsd:complexType>
+    <xsd:choice>
+      <xsd:element name="congress" type="resultT"></xsd:element>
+      <xsd:element name="error" type="xsd:string" minOccurs="1" maxOccurs="unbounded"></xsd:element>
+    </xsd:choice>
+  </xsd:complexType>
+</xsd:element>
+
+ <xsd:complexType name="resultT">
+       <xsd:sequence>
+           <xsd:element name="name">
+              <xsd:complexType>
+                <xsd:simpleContent>
+                  <xsd:extension base="xsd:string">
+                    <xsd:attribute name="number" type="xsd:integer"></xsd:attribute>
+                  </xsd:extension>
+                </xsd:simpleContent>
+              </xsd:complexType>
+           </xsd:element>
+           <xsd:element name="period" type="periodT"/>
+           <xsd:element name="url" type="xsd:string"/>
+           <xsd:element name="chambers">
+               <xsd:complexType>
+                   <xsd:sequence>
+                       <xsd:element name="chamber" type="chamberT" minOccurs="1" maxOccurs="unbounded" />
+                   </xsd:sequence>
+              </xsd:complexType>
+           </xsd:element>
+       </xsd:sequence>
+ </xsd:complexType>
+
+ <xsd:complexType name="periodT">
+   <xsd:simpleContent>
+    <xsd:extension base="xsd:string">
+      <xsd:attribute name="from" type="xsd:string"></xsd:attribute>
+      <xsd:attribute name="to" type="xsd:string"></xsd:attribute>
+    </xsd:extension>
+   </xsd:simpleContent>
+ </xsd:complexType>
+
+ <xsd:complexType name="chamberT">
+   <xsd:sequence>
+ 		  <xsd:element name="name" type="xsd:string"/>
+        <xsd:element name="members">
+          <xsd:complexType>
+            <xsd:sequence>
+              <xsd:element name="member" type="memberT" minOccurs="1" maxOccurs="unbounded"/>
+            </xsd:sequence>
+          </xsd:complexType>
+        </xsd:element>
+        <xsd:element name="sessions">
+          <xsd:complexType>
+            <xsd:sequence>
+              <xsd:element name="session" type="sessionT" minOccurs="1" maxOccurs="unbounded"/>
+            </xsd:sequence>
+          </xsd:complexType>
+        </xsd:element>
+ 	</xsd:sequence>
+</xsd:complexType>
+
+ <xsd:complexType name="memberT">
+  <xsd:sequence>
+    <xsd:element name="name" type="xsd:string"/>
+    <xsd:element name="state" type="xsd:string"/>
+    <xsd:element name="party" type="xsd:string"/>
+    <xsd:element name="image_url" type="xsd:string"/>
+    <xsd:element name="period" type="periodT"/>
+  </xsd:sequence>
+  <xsd:attribute name="bioguideId" type="xsd:string"></xsd:attribute>
+ </xsd:complexType>
+
+ <xsd:complexType name="sessionT">
+  <xsd:sequence>
+    <xsd:element name="number" type="xsd:integer"/>
+    <xsd:element name="period" type="periodT"/>
+    <xsd:element name="type" type="xsd:string"/>
+  </xsd:sequence>
+ </xsd:complexType>
+</xsd:schema>
