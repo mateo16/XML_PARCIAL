@@ -28,23 +28,23 @@ if [ $error -eq 1 ]
 then
     java net.sf.saxon.Query "congress_number=$CONGRESS_NUMBER" "invalid_arguments_number=$invalid_arguments_number" "invalid_congress_number=$invalid_congress_number" "information_not_found=$information_not_found" ./queries/extract_congress_data.xq -o:./data/$CONGRESS_DATA_FILE
     echo Data generated at data/$CONGRESS_DATA_FILE
-    java net.sf.saxon.Transform -s:data/$CONGRESS_DATA_FILE -xsl:helpers/add_validation_schema.xsl -o:data/$CONGRESS_DATA_FILE
-    java net.sf.saxon.Transform -s:data/$CONGRESS_DATA_FILE -xsl:helpers/generate_html.xsl -o:data/$CONGRESS_PAGE_FILE
+    java net.sf.saxon.Transform -s:data/$CONGRESS_DATA_FILE -xsl:transformations/add_validation_schema.xsl -o:data/$CONGRESS_DATA_FILE
+    java net.sf.saxon.Transform -s:data/$CONGRESS_DATA_FILE -xsl:transformations/generate_html.xsl -o:data/$CONGRESS_PAGE_FILE
     echo Page generated at data/$CONGRESS_PAGE_FILE
     exit 1
 fi
 
 # Fetch congress information and members data
-curl -X GET "https://api.congress.gov/v3/congress/${CONGRESS_NUMBER}?format=xml&api_key=${CONGRESS_API}" -H "accept: application/xml" -o congress_info.xml
-curl -X GET "https://api.congress.gov/v3/member/congress/${CONGRESS_NUMBER}?format=xml&currentMember=false&limit=500&api_key=${CONGRESS_API}" -H "accept: application/xml" -o congress_members_info.xml
+curl -X GET "https://api.congress.gov/v3/congress/${CONGRESS_NUMBER}?format=xml&api_key=${CONGRESS_API}" -H "accept: application/xml" -o data/congress_info.xml
+curl -X GET "https://api.congress.gov/v3/member/congress/${CONGRESS_NUMBER}?format=xml&currentMember=false&limit=500&api_key=${CONGRESS_API}" -H "accept: application/xml" -o data/congress_members_info.xml
 
 # Create the XML output using XQuery
 java net.sf.saxon.Query "congress_number=$CONGRESS_NUMBER" "invalid_arguments_number=$invalid_arguments_number" "invalid_congress_number=$invalid_congress_number" "information_not_found=$information_not_found" ./extract_congress_data.xq -o:./data/$CONGRESS_DATA_FILE
 
 # Apply XSLT transformations
-java net.sf.saxon.Transform -s:data/$CONGRESS_DATA_FILE -xsl:helpers/add_validation_schema.xsl -o:data/$CONGRESS_DATA_FILE
+java net.sf.saxon.Transform -s:data/$CONGRESS_DATA_FILE -xsl:transformations/add_validation_schema.xsl -o:data/$CONGRESS_DATA_FILE
 echo Data generated at data/$CONGRESS_DATA_FILE
 
 # Generate the HTML page
-java net.sf.saxon.Transform -s:data/$CONGRESS_DATA_FILE -xsl:generate_html.xsl -o:data/$CONGRESS_PAGE_FILE
+java net.sf.saxon.Transform -s:data/$CONGRESS_DATA_FILE -xsl:transformations/generate_html.xsl -o:data/$CONGRESS_PAGE_FILE
 echo Page generated at data/$CONGRESS_PAGE_FILE
