@@ -34,9 +34,16 @@ then
     exit 1
 fi
 
-# Fetch congress information and members data
-curl -X GET "https://api.congress.gov/v3/congress/${CONGRESS_NUMBER}?format=xml&api_key=${CONGRESS_API}" -H "accept: application/xml" -o data/congress_info.xml
-curl -X GET "https://api.congress.gov/v3/member/congress/${CONGRESS_NUMBER}?format=xml&currentMember=false&limit=500&api_key=${CONGRESS_API}" -H "accept: application/xml" -o data/congress_members_info.xml
+mkdir -p data
+
+# Fetch congress information and normalize the data
+curl -X GET "https://api.congress.gov/v3/congress/${CONGRESS_NUMBER}?format=xml&api_key=${CONGRESS_API}" -H "accept: application/xml" -o data/$CONGRESS_INFO_FILE
+java net.sf.saxon.Transform -s:data/$CONGRESS_INFO_FILE -xsl:transformations/normalize_text.xsl -o:data/$CONGRESS_INFO_FILE
+
+# Fetch congress members information and normalize the data
+curl -X GET "https://api.congress.gov/v3/member/congress/${CONGRESS_NUMBER}?format=xml&currentMember=false&limit=500&api_key=${CONGRESS_API}" -H "accept: application/xml" -o data/$CONGRESS_MEMBERS_INFO_FILE
+java net.sf.saxon.Transform -s:data/$CONGRESS_MEMBERS_INFO_FILE -xsl:transformations/normalize_text.xsl -o:data/$CONGRESS_MEMBERS_INFO_FILE
+
 
 # Create the XML output using XQuery
 java net.sf.saxon.Query "congress_number=$CONGRESS_NUMBER" "invalid_arguments_number=$invalid_arguments_number" "invalid_congress_number=$invalid_congress_number" "information_not_found=$information_not_found" ./extract_congress_data.xq -o:./data/$CONGRESS_DATA_FILE

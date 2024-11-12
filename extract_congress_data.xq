@@ -32,13 +32,13 @@ declare function local:extract-congress-info($congress-info as document-node(), 
                             let $chamber-sessions := 
                                 for $session in $sessions
                                 where some $chamber in $session/chamber
-                                    satisfies normalize-space($chamber) = normalize-space($chamber-name-text)
+                                    satisfies $chamber = $chamber-name-text
                                 return $session
                             
                             let $chamber-members := 
                                 for $member in $members
                                 where some $chamber in $member//terms/item/item/chamber
-                                    satisfies normalize-space($chamber) = normalize-space($chamber-name-text)
+                                    satisfies $chamber = $chamber-name-text
                                 return $member
 
                             return
@@ -51,12 +51,12 @@ declare function local:extract-congress-info($congress-info as document-node(), 
                                         let $state := $member/state
                                         let $party := $member/partyName
                                         let $image-url := $member/depiction/imageUrl
-                                        let $terms := $member/terms/item/item[normalize-space(lower-case(chamber)) = normalize-space(lower-case($chamber-name-text))]
+                                        let $terms := $member/terms/item/item[lower-case(chamber) = lower-case($chamber-name-text)]
         
                                         for $term in $terms
-                                        let $term-start := normalize-space($term/startYear)
-                                        let $term-end := normalize-space($term/endYear)
-        
+                                        let $term-start := $term/startYear
+                                        let $term-end := $term/endYear
+    
                                         return
                                             <member bioguideId="{data($member/bioguideId)}">
                                                 <name>{data($member-name)}</name>
