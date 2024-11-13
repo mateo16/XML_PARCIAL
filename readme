@@ -1,0 +1,7 @@
+para poder correr el script es necesario tener una API key para Congress.gov 
+configurada en la variable de entorno CONGRESS_API. Tambien es necesario tener java,
+ la biblioteca saxon para java instalada (recomedamos que sea la version 11 que es la que tenemos nosotros,
+ pero deberia funcionar con versiones superiores)
+  con las variables PATH y CLASSPATH configuradas.
+ si excede el limite de consultas de la api el script no funcionara,
+o funcionara con los xml obtenidos anteriormente si no borro los resultados anteriores de la carpeta data.
